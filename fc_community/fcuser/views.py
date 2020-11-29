@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password, check_password # 암호화
 from .models import Fcuser # DB정보를 가져온다
+from .forms import LoginForm
 
 # Create your views here.
 
@@ -22,28 +23,18 @@ def logout(request):
     return redirect('/')
 
 def login(request):
-    if request.method == 'GET':
-        return render(request, 'login.html')
-    elif request.method == 'POST':
-        username = request.POST.get('username', None)
-        password = request.POST.get('password', None)
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid(): # 로그인 form을 확인해서 값이 잘 들어있으면
+            # session
+            request.session['user'] = form.user_id
 
-        res_data = {}
-        if not (username and password):
-            res_data['error'] = ' 모든 값을 입력해야합니다.'
-        else:
-            # DB의 username과 입력받은 username이 일치하는지 비교
-            fcuser = Fcuser.objects.get(username=username) # 일치하면 DB모델반환
-            if check_password(password, fcuser.password):                
-                # 비밀번호가 일치
-                # 세션
-                request.session['user'] = fcuser.id # user라는 키로 세션저장
-                return redirect('/') # 홈으로                
-            else:
-                #비밀번호 틀림                
-                res_data['error'] = '비밀번호가 틀렸습니다.'
-            
-        return render(request, 'login.html', res_data)
+            return redirect('/')
+    else:
+        form = LoginForm()
+    
+    return render(request, 'login.html', {'form':form})    
+                
 
 # url에 연결하면 요청정보가 request변수를 통해 들어온다
 def register(request):
