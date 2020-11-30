@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.core.paginator import Paginator # Paginator는 page에 대한 정보를 담고있다
 from django.http import Http404
 from fcuser.models import Fcuser
 from .models import Board
@@ -40,5 +41,9 @@ def board_write(request):
 
 def board_list(request):
     # Board에서 모든 요소를 가져오고 id를 최신 순으로 정렬한다
-    boards = Board.objects.all().order_by('-id')
+    all_boards = Board.objects.all().order_by('-id')
+    page = request.GET.get('p', 1)
+    paginator = Paginator(all_boards, 2) # 한 페이지당 몇개씩 보여줄지?
+
+    boards = paginator.get_page(page)
     return render(request, 'board_list.html', {'boards': boards})

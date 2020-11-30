@@ -25,9 +25,38 @@
         </table>
     </div>
 </div>
+<div class="row mt-2">
+    <div class="col-12">
+        <nav>
+            <ul class="pagination justify-content-center">                
+                {% if boards.has_previous %}
+                <li class="page-item">
+                    <a href="?p={{ boards.previous_page_number }}" class="page-link">이전으로</a>
+                </li>
+                {% else %} <!--이전페이지 없을경우 disabled:버튼 클릭X -->
+                <li class="page-item disabled">
+                    <a href="#" class="page-link">이전으로</a>
+                </li>
+                {% endif %}                
+                <li class="page-item active">
+                    <a href="#" class="page-link">{{ boards.number }} / {{ boards.paginator.num_pages }}</a>
+                </li>                
+                {% if boards.has_next %}
+                <li class="page-item">
+                    <a href="?p={{ boards.next_page_number }}" class="page-link">다음으로</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                <a href="#" class="page-link">다음으로</a>
+                {% endif %}
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
 <div class="row">
     <div class="col-12">
-        <button class="btn btn-primary">글쓰기</button>
+        <button class="btn btn-primary" onclick="location.href='/board/write/'">글쓰기</button>
     </div>
 </div>
 {% endblock %}
