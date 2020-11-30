@@ -6,8 +6,10 @@ class Board(models.Model):
     title = models.CharField(max_length=128,
                                 verbose_name='제목')
     contents = models.TextField(verbose_name='내용')
+    # ForeignKey : 1대n 관계 / Tag : n대n 관계
     writer = models.ForeignKey('fcuser.Fcuser', on_delete=models.CASCADE, # 사용자가 삭제됐을경우 게시글도 삭제되게함
                                 verbose_name='작성자')
+    tags = models.ManyToManyField('tag.Tag', verbose_name='태그')
     registered_dttm = models.DateTimeField(auto_now_add=True,
                                             verbose_name='등록시간')
     
