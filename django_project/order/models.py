@@ -8,6 +8,9 @@ class Dj_Order(models.Model):
     quantity = models.IntegerField(verbose_name='수량')
     register_date = models.DateField(auto_now_add=True, verbose_name='등록날짜')
     
+    def __str__(self): # 대표로 표시할 이름
+        return str(self.djuser) + ' ' + str(self.product)
+
     class Meta: # 관리자페이지
         db_table = 'dj_order'
         verbose_name = '주문'
