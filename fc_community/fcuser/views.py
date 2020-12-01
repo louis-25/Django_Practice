@@ -31,6 +31,7 @@ def login(request):
 
 # url에 연결하면 요청정보가 request변수를 통해 들어온다
 def register(request):
+    error_check = 0
     if request.method == 'GET':
         return render(request, 'register.html')
     elif request.method == 'POST':
@@ -44,8 +45,10 @@ def register(request):
         res_data = {}
         if not (username and password and re_password and useremail):
             res_data['error'] = '모든 값을 입력해야합니다.'
+            error_check = 1
         if password != re_password:
             res_data['error'] = '비밀번호가 다릅니다!'
+            error_check = 1
         else:
             # DB에 모델로 저장
             fcuser = Fcuser(
@@ -58,5 +61,8 @@ def register(request):
 
         # 반환하고싶은 html파일 (파일의 경로는 기본적으로 templates로 지정돼있다)
         # res_data가 register.html에 전달된다
-        return render(request, 'register.html', res_data) 
+        if error_check:
+            return render(request, 'register.html', res_data) 
+        else:
+            return render(request, 'home.html')
     

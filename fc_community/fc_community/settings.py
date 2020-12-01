@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Quick-start development settings - unsuitable for production
@@ -24,9 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '#7a1@t%*7ys&c68ywak#2gh=%_0dmaoo5u1b_ev#9@#19=b%!$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# 배포할때는 False로 바꿔주자
+DEBUG = False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+ALLOWED_HOSTS = ['bluebean.pythonanywhere.com']
 
 
 # Application definition
@@ -80,7 +81,7 @@ WSGI_APPLICATION = 'fc_community.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # sqlite3 을 사용한다
-        'NAME': BASE_DIR / 'db.sqlite3', # db의 위치
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'), # db의 위치
     }
 }
 
@@ -122,6 +123,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'), # BASE_DIR은 프로젝트의 경로를 뜻한다
-]
+# 개발용
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'), # BASE_DIR은 프로젝트의 경로를 뜻한다
+# ]
+
+# 배포용
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
