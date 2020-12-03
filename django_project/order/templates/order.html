@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% load humanize %} <!--필터 사용가능-->
+{% block contents %}
+<div class="row mt-5">
+    <div class="col-12">
+        <table class="table table-light">
+            <h1>주문 목록</h1>
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">상품명</th>
+                    <th scope="col">수량</th>
+                    <th scope="col">주문날짜</th>
+                </tr>
+            </thead>
+            <tbody class="text-dark">
+                {% for order in order_list %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <th>{{ order.product }}</a></th>
+                    <th>{{ order.quantity|intcomma }}</th> <!--intcomma: 3자리마다 콤마-->
+                    <th>{{ order.register_date|date:'Y-m-d H:i' }}</th>
+                </tr>                
+                {% endfor %}
+            </tbody>
+        </table>        
+    </div>
+</div>
+{% endblock %}

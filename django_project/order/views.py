@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import FormView
+from django.views.generic import ListView
 from .forms import RegisterForm
+from .models import Dj_Order
 
 # Create your views here.
 
@@ -17,3 +19,12 @@ class OrderCreate(FormView):
             'request':self.request # request인자값 추가
         })
         return kw
+
+class OrderList(ListView):
+    model = Dj_Order
+    template_name = 'order.html'
+    context_object_name = 'order_list' # order.hmtl에서 object_list대신 사용하고싶은 변수명
+
+    def get_queryset(self, **kwargs): # 현재 로그인한 사용자의 주문정보만 조회 가능하게 함
+        queryset = Dj_Order.objects.filter(djuser__email=self.request.session.get('user'))
+        return queryset

@@ -6,7 +6,7 @@ class Dj_Order(models.Model):
     djuser = models.ForeignKey('user.Dj_User', on_delete=models.CASCADE, verbose_name='사용자') # user의 Dj_User class를 참조
     product = models.ForeignKey('product.Dj_Product', on_delete=models.CASCADE, verbose_name='상품')
     quantity = models.IntegerField(verbose_name='수량')
-    register_date = models.DateField(auto_now_add=True, verbose_name='등록날짜')
+    register_date = models.DateTimeField(auto_now_add=True, verbose_name='등록날짜')
     
     def __str__(self): # 대표로 표시할 이름
         return str(self.djuser) + ' ' + str(self.product)
