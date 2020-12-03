@@ -12,7 +12,7 @@ class Dj_Order(models.Model):
         return str(self.djuser) + ' ' + str(self.product)
 
     class Meta: # 관리자페이지
-        db_table = 'dj_order'
+        db_table = 'Dj_Order'
         verbose_name = '주문'
         verbose_name_plural = '주문'
     

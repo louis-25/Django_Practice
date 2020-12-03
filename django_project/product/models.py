@@ -13,6 +13,6 @@ class Dj_Product(models.Model):
         return self.name
 
     class Meta: # 관리자페이지
-        db_table = 'dj_product'
+        db_table = 'Dj_Product'
         verbose_name = '상품'
         verbose_name_plural = '상품'

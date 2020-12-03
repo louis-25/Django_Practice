@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView
+from django.utils.decorators import method_decorator
+from user.decorators import login_required, admin_required
 from .models import Dj_Product
 from .forms import RegisterForm
 from order.forms import RegisterForm as OrderForm
@@ -13,6 +15,7 @@ class ProductList(ListView):
     template_name = 'product.html'
     context_object_name = 'product_list' # product.hmtl에서 object_list대신 사용하고싶은 변수명
 
+@method_decorator(admin_required, name='dispatch') # decorator
 class ProductCreate(FormView):        
     template_name = 'product_register.html'
     form_class = RegisterForm
