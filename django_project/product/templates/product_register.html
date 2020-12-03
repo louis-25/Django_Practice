@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block header %} <!-- base.html 헤더에서 product_register.html에만 추가해줄 것들-->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#id_description').summernote({
+            height: 300
+        });
+    });
+</script>
+{% endblock %}
+{% block contents %}
+<div class="row mt-5">
+    <div class="col-12 text-center">
+        <h1>상품등록</h1>
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-12">
+        <!-- res_data의 key값과 매칭됨 -->
+        {{ error }}
+    </div>
+</div>
+<div class="row mt-5">
+    <div class="col-12">                    
+        <form method="POST" action=".">
+            <!-- 크로스 도메인 막는용도로 암호화된 정보를 넣어준다 -->
+            {% csrf_token %}
+            {% for field in form %}                       
+            <div class="form-group">
+                <label for="{{ field.id_for_label}}">{{ field.label }}</label>
+                {% ifequal field.name 'description' %}
+                <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" cols="30" rows="10"></textarea>
+                {% else %}
+                <input type="{{ field.field.widget.input_type }}" class="form-control" id="{{ field.id_for_label }}"
+                placeholder="{{ field.label }}" name="{{ field.name }}" />
+                {% endifequal %}
+            </div>
+            <!-- field에 값이 없을때 에러발생 -->
+            {% if field.errors %}            
+            <span style="color:red">{{ field.errors }}</span>
+            {% endif %}
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">등록</button>
+            <button type="button" class="btn btn-primary" onclick="location.href='/product/'">돌아가기</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

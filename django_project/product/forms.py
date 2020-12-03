@@ -1,0 +1,45 @@
+from django import forms
+from .models import Dj_Product
+
+class RegisterForm(forms.Form):
+    name = forms.CharField(
+        error_messages={
+            'required': '상품명을 입력해주세요'
+        },
+        max_length=64, label='상품명'
+    )
+    price = forms.IntegerField(
+        error_messages={
+            'required': '상품가격을 입력해주세요'
+        },
+        label='상품가격'
+    )
+    description = forms.CharField(
+        error_messages={
+            'required': '상품설명을 입력해주세요'
+        },
+        label='상품설명'
+    )
+    stock = forms.IntegerField(
+        error_messages={
+            'required': '재고를 입력해주세요'
+        },
+        label='재고'
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # models의 정보를 가져온다
+        name = cleaned_data.get('name')
+        price = cleaned_data.get('price')
+        description = cleaned_data.get('description')
+        stock = cleaned_data.get('stock')
+
+        if name and price and description and stock: # 모든 값이 들어왔을때
+            product = Dj_Product(
+                name=name,
+                price=price,
+                description=description,
+                stock=stock
+            )
+            product.save()
