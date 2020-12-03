@@ -17,7 +17,7 @@ class LoginView(FormView):
     form_class = LoginForm
     success_url = '/' # 성공시 이동할곳
 
-    def form_valid(self, form):
+    def form_valid(self, form): # form에서 값을 제대로 받았을경우(로그인 성공한 경우)
         self.request.session['user'] = form.email
         
         return super().form_valid(form)

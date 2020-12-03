@@ -23,8 +23,8 @@ class ProductDetail(DetailView):
     queryset = Dj_Product.objects.all()
     context_object_name = 'product_detail'    
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs): # 현재 페이지의 인자값을 전달하기위해 사용함
         context = super().get_context_data(**kwargs)
-        context['form'] = OrderForm()
+        context['form'] = OrderForm(self.request) # self.request로 현재 클래스의 정보를 넘긴다
         return context
     

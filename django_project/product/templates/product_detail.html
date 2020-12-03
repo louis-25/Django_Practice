@@ -10,6 +10,7 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <form method="POST" action="/order/create/"> <!--/order/create/주소에 POST방식으로 form전달-->
+                        {% csrf_token %}
                         {% for field in form %}                       
                         <div class="form-group">
                             {% ifnotequal field.name 'product' %} <!--form에서 가져온 product-->
@@ -29,6 +30,7 @@
                 </li>
                 <li class="list-group-item">가격: {{ product_detail.price|intcomma }} 원</li>
                 <li class="list-group-item">등록날짜: {{ product_detail.register_date|date:'Y-m-d H:i' }}</li>
+                <li class="list-group-item">재고: {{ product_detail.stock|intcomma }}</li>
                 <li class="list-group-item">{{ product_detail.description|safe }}</li> <!--safe는 html코드로 변환해서 보여주는 옵션-->
             </ul>            
         </div>                
