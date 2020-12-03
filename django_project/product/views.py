@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView
 from .models import Dj_Product
 from .forms import RegisterForm
@@ -16,4 +16,9 @@ class ProductCreate(FormView):
     template_name = 'product_register.html'
     form_class = RegisterForm
     success_url =  '/product/'
+
+class ProductDetail(DetailView):        
+    template_name = 'product_detail.html'
+    queryset = Dj_Product.objects.all()
+    context_object_name = 'product_detail'    
     

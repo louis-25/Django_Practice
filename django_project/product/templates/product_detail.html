@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load humanize %} <!--필터 사용가능-->
+{% block contents %}
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card" style="width: 100%;">
+            <div class="card-body">
+                <h5 class="card-title">{{ product_detail.name }}</h5>                
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">가격: {{ product_detail.price|intcomma }} 원</li>
+                <li class="list-group-item">등록날짜: {{ product_detail.register_date|date:'Y-m-d H:i' }}</li>
+                <li class="list-group-item">{{ product_detail.description|safe }}</li> <!--safe는 html코드로 변환해서 보여주는 옵션-->
+            </ul>            
+        </div>                
+        <button type="button" class="btn btn-primary" onclick="location.href='/product/'">돌아가기</button>
+    </div>
+</div>
+{% endblock %}
