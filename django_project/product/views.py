@@ -2,13 +2,35 @@ from django.shortcuts import render
 from django.views.generic import ListView, DetailView
 from django.views.generic.edit import FormView
 from django.utils.decorators import method_decorator
+from rest_framework import generics, mixins # mixins - class에서 상속받아 쉽게 작성할 수 있게해줌
+
 from user.decorators import login_required, admin_required
 from .models import Dj_Product
 from .forms import RegisterForm
+from .serializers import ProductSerializer
 from order.forms import RegisterForm as OrderForm
 
 
 # Create your views here.
+
+# RestFramework
+class ProductListAPI(generics.GenericAPIView, mixins.ListModelMixin):
+    serializer_class = ProductSerializer # 데이터 검증을위해 등록
+
+    def get_queryset(self):
+        return Dj_Product.objects.all().order_by('id')
+
+    def get(self, request, *args, **kwargs): # get-list / post-create 형태로 만들예정
+        return self.list(request, *args, **kwargs)
+
+class ProductDetailAPI(generics.GenericAPIView, mixins.RetrieveModelMixin):
+    serializer_class = ProductSerializer # 데이터 검증을위해 등록
+
+    def get_queryset(self):
+        return Dj_Product.objects.all().order_by('id')
+
+    def get(self, request, *args, **kwargs): # get-list / post-create 형태로 만들예정
+        return self.retrieve(request, *args, **kwargs)
 
 class ProductList(ListView):
     model = Dj_Product

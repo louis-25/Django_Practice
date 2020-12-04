@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize', # 필터 사용가능
+    'rest_framework', # DRF (Django Rest Framework)
     'order',
     'product',
     'user'
