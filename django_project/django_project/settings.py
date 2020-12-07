@@ -30,7 +30,19 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+BATON = {
+    'SITE_HEADER':'헤더',
+    'SITE_TITLE':'타이틀',
+    'INDEX_TITLE':'인덱스 타이틀',
+    'SUPPORT_HREF':'https://github.com/louis-25',
+    #'SUPPORT_HREF':'mailto:20151577@vision.hoseo.edu', 메일연동
+    'COPYRIGHT': 'louis-25',
+    'POWERED_BY': '<a href="https://github.com/louis-25">',    
+    'MENU_TITLE': '메뉴 타이틀'
+}
+
 INSTALLED_APPS = [
+    'baton',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,9 +51,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize', # 필터 사용가능
     'rest_framework', # DRF (Django Rest Framework)
-    'order',
-    'product',
-    'user'
+    'order.apps.OrderConfig',
+    'product.apps.ProductConfig',
+    'user.apps.UserConfig',
+    'baton.autodiscover'
 ]
 
 MIDDLEWARE = [
