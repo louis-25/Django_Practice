@@ -33,7 +33,7 @@ refund.short_description='환불'
 class Dj_Order_Admin(admin.ModelAdmin):
     list_filter = ('status',) # 필터추가
     list_display = ('djuser', 'product', 'styled_status', 'action') # model에서 표시할 항목
-    change_list_template = 'admin/order_change_list.html' # template 더를 지정할 수 있다
+    change_list_template = 'admin/order_change_list.html' # template 폴더를 지정할 수 있다    
 
     actions = [
         refund
@@ -79,6 +79,8 @@ class Dj_Order_Admin(admin.ModelAdmin):
     def changeform_view(self, request, object_id=None, form_url='', extra_context=None): # 수정페이지 제목변경
         order = Dj_Order.objects.get(pk=object_id)
         extra_context = {'title': f"'{order.djuser.email}'의 '{order.product.name}' 주문 수정하기'"}
+        extra_context['show_save_and_add_another'] = False # 버튼삭제
+        extra_context['show_save_and_continue'] = False # 버튼삭제
         return super().changeform_view(request, object_id, form_url, extra_context)
 
     styled_status.short_description='상태' # 목록명 바꾸기
