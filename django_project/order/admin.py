@@ -11,12 +11,11 @@ def refund(self, request, queryset):
     with transaction.atomic():
         qs = queryset.filter(~Q(status='환불')) # status가 환불이 아닌경우
         
-        ct = ContentType.objects.get_for_model(queryset.model) # 내가 지금 수정하는 모델이 어떤타입인지 알려줌
+        ct = ContentType.objects.get_for_model(qs.model) # 내가 지금 수정하는 모델이 어떤타입인지 알려줌
         for obj in qs:
             # if obj.status == '환불': continue
             obj.product.stock += obj.quantity
             obj.product.save()
-
             
             LogEntry.objects.log_action( # LogEntry는 무슨 모델을 수정하는지를 기록한다
                 user_id=request.user.id,
@@ -33,12 +32,17 @@ refund.short_description='환불'
 
 class Dj_Order_Admin(admin.ModelAdmin):
     list_filter = ('status',) # 필터추가
-    list_display = ('djuser', 'product', 'styled_status') # model에서 표시할 항목
+    list_display = ('djuser', 'product', 'styled_status', 'action') # model에서 표시할 항목
+    change_list_template = 'admin/order_change_list.html' # template 더를 지정할 수 있다
 
     actions = [
         refund
     ]
     
+    def action(self, obj):
+        if obj.status != '환불':
+            return format_html(f'<input type="button" value="환불" onclick="order_refund_submit({obj.id})" class="btn btn-primary btn-sm">')
+
     def styled_status(self, obj):
         if obj.status == '환불':
             return format_html(f'<b><span style="color:red">{obj.status}</span></b>')
@@ -48,6 +52,28 @@ class Dj_Order_Admin(admin.ModelAdmin):
     
     def changelist_view(self, request, extra_context=None): # 제목바꾸기
         extra_context = { 'title': '주문 목록' }
+
+        if request.method == 'POST':            
+            
+            obj_id = request.POST.get('obj_id')
+            if obj_id:
+                qs = Dj_Order.objects.filter(pk=obj_id)
+                ct = ContentType.objects.get_for_model(qs.model) # 내가 지금 수정하는 모델이 어떤타입인지 알려줌
+                for obj in qs:
+                    # if obj.status == '환불': continue
+                    obj.product.stock += obj.quantity
+                    obj.product.save()
+                    
+                    LogEntry.objects.log_action( # LogEntry는 무슨 모델을 수정하는지를 기록한다
+                        user_id=request.user.id,
+                        content_type_id=ct.pk,
+                        object_id=obj.pk,
+                        object_repr=f'{obj.product.name} 환불',
+                        action_flag=CHANGE,
+                        change_message='주문 환불'
+                    )
+                qs.update(status='환불')
+
         return super().changelist_view(request, extra_context)
     
     def changeform_view(self, request, object_id=None, form_url='', extra_context=None): # 수정페이지 제목변경
