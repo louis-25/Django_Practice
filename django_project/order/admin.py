@@ -1,13 +1,44 @@
+from django.contrib.admin.models import LogEntry, CHANGE
+from django.contrib.contenttypes.models import ContentType 
+from django.db.models import F, Q
 from django.contrib import admin
 from django.utils.html import format_html # 내가 입력한 html태그를 인식하게해줌
+from django.db import transaction
 from .models import Dj_Order
 
 # Register your models here.
+def refund(self, request, queryset):
+    with transaction.atomic():
+        qs = queryset.filter(~Q(status='환불')) # status가 환불이 아닌경우
+        
+        ct = ContentType.objects.get_for_model(queryset.model) # 내가 지금 수정하는 모델이 어떤타입인지 알려줌
+        for obj in qs:
+            # if obj.status == '환불': continue
+            obj.product.stock += obj.quantity
+            obj.product.save()
+
+            
+            LogEntry.objects.log_action( # LogEntry는 무슨 모델을 수정하는지를 기록한다
+                user_id=request.user.id,
+                content_type_id=ct.pk,
+                object_id=obj.pk,
+                object_repr=f'{obj.product.name} 환불',
+                action_flag=CHANGE,
+                change_message='주문 환불'
+            )
+        qs.update(status='환불')
+    
+
+refund.short_description='환불'
 
 class Dj_Order_Admin(admin.ModelAdmin):
     list_filter = ('status',) # 필터추가
     list_display = ('djuser', 'product', 'styled_status') # model에서 표시할 항목
 
+    actions = [
+        refund
+    ]
+    
     def styled_status(self, obj):
         if obj.status == '환불':
             return format_html(f'<b><span style="color:red">{obj.status}</span></b>')
