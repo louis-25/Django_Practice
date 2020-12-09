@@ -1,9 +1,13 @@
+import datetime
 from django.contrib.admin.models import LogEntry, CHANGE
 from django.contrib.contenttypes.models import ContentType 
 from django.db.models import F, Q
 from django.contrib import admin
+from django.template.response import TemplateResponse
 from django.utils.html import format_html # 내가 입력한 html태그를 인식하게해줌
+from django.shortcuts import get_object_or_404
 from django.db import transaction
+from django.urls import path
 from .models import Dj_Order
 
 # Register your models here.
@@ -78,10 +82,29 @@ class Dj_Order_Admin(admin.ModelAdmin):
     
     def changeform_view(self, request, object_id=None, form_url='', extra_context=None): # 수정페이지 제목변경
         order = Dj_Order.objects.get(pk=object_id)
+        # order = get_object_or_404(Dj_Order, pk=object_id)
         extra_context = {'title': f"'{order.djuser.email}'의 '{order.product.name}' 주문 수정하기'"}
-        extra_context['show_save_and_add_another'] = False # 버튼삭제
-        extra_context['show_save_and_continue'] = False # 버튼삭제
+        extra_context['show_save_and_add_another'] = False # 버튼 제거
+        extra_context['show_save_and_continue'] = False # 버튼 제거
         return super().changeform_view(request, object_id, form_url, extra_context)
+
+    def get_urls(self):
+        urls = super().get_urls() # 기존의 url
+        date_urls = [
+            path('date_view/', self.date_view),
+        ]
+        return date_urls + urls
+    
+    def date_view(self, request):
+        week_date = datetime.datetime.now() - datetime.timedelta(days=7)
+        week_data = Dj_Order.objects.filter(register_date__gte=week_date)
+        data = Dj_Order.objects.filter(register_date__lt=week_date)
+        context = dict(
+           self.admin_site.each_context(request), # 사이트의 기본적인 정보
+           week_data = week_data,
+           data = data
+        )
+        return TemplateResponse(request, 'admin/order_date_view.html', context)
 
     styled_status.short_description='상태' # 목록명 바꾸기
 
